@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - My Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .orders-container { padding: 40px 5%; max-width: 1200px; margin: 0 auto; min-height: 60vh; }
+        .orders-header { margin-bottom: 30px; }
+        .orders-header h1 { font-weight: 900; color: var(--text-dark); }
+        
+        .order-card { background: white; border-radius: 15px; box-shadow: var(--shadow-sm); padding: 25px; margin-bottom: 20px; border: 1px solid #eee; transition: var(--transition); }
+        .order-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        
+        .order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
+        .order-id { font-weight: 800; font-size: 18px; color: var(--primary); }
+        .order-date { color: #888; font-size: 14px; font-weight: 600; }
+        
+        .order-details-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .order-details-grid { grid-template-columns: 1fr; } }
+        
+        .address-info h4, .status-info h4 { font-size: 12px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; }
+        .address-info p { font-size: 14px; color: #555; line-height: 1.5; font-weight: 600; }
+        
+        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 800; text-transform: capitalize; }
+        .status-pending { background: #fff4e6; color: #fd7e14; }
+        .status-approved { background: #e6fcf5; color: #20c997; }
+        .status-pfa { background: #f1f3f5; color: #495057; }
+        .status-cancelled { background: #fff5f5; color: #ff6b6b; }
+        
+        .order-actions { margin-top: 20px; display: flex; gap: 15px; }
+        .btn-view { background: #f0f0f0; color: #555; border: none; padding: 10px 20px; border-radius: 25px; font-weight: 700; cursor: pointer; transition: 0.2s; text-decoration: none; font-size: 14px; }
+        .btn-view:hover { background: #e0e0e0; }
+        
+        .empty-orders { text-align: center; padding: 60px 20px; }
+        .empty-orders i { font-size: 60px; color: #ddd; margin-bottom: 20px; }
+        .empty-orders h2 { font-weight: 900; margin-bottom: 10px; }
+        .empty-orders p { color: #888; margin-bottom: 30px; }
+        .shop-now-btn { background: var(--primary); color: white; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: 800; display: inline-block; }
+        
+        .loading-state { text-align: center; padding: 50px; }
+        .loading-state i { font-size: 40px; color: var(--primary); }
+    </style>
+</head>
+<body>
+    <header class="navbar has-back-btn">
+        <!-- New Back Button for Mobile -->
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+        </a>
+        <div class="nav-links desktop-only">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="orders.html" class="active"><i class="fas fa-box-open"></i> Orders</a>
+            <div id="authWrapper">
+                <a href="login.html" id="loginLink"><i class="fas fa-user"></i> Login</a>
+            </div>
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCountDesktop" class="badge">0</span></a>
+        </div>
+        <div class="nav-links cart-only mobile-only">
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+            <div class="hamburger" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <main class="orders-container">
+        <div class="orders-header">
+            <h1>My Orders 📦</h1>
+        </div>
+
+        <div id="ordersList">
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p style="margin-top: 15px; font-weight: 700; color: #666;">Fetching your orders...</p>
+            </div>
+            <!-- Orders injected here -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom"><p>&copy; 2026 FirstCry Clone | Developed and Maintained  By Kush Sharma  ( Digisoft Solutions )</p></div>
+    </footer>
+
+    <!-- Unified Mobile Bottom Navigation -->
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Cart</span><span id="cartCountMobileBottom" class="dot" style="display:none;"></span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script src="nav.js"></script>
+    <script>
+        let userId = localStorage.getItem('fc_user_id');
+        
+        async function fetchOrders() {
+            const listEl = document.getElementById('ordersList');
+            
+            if (!userId || userId.startsWith('GUEST_')) {
+                listEl.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-user-circle"></i>
+                        <h2>Login Required</h2>
+                        <p>Please login to view your order history.</p>
+                        <a href="login.html" class="shop-now-btn">Login Now</a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const email = localStorage.getItem('fc_user_email') || '';
+                console.log('Fetching orders for:', userId, email);
+                const res = await fetch(`/api/orders?userid=${userId}&email=${email}`);
+                const orders = await res.json();
+
+                if (!Array.isArray(orders) || orders.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-orders">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h2>No Orders Yet</h2>
+                            <p>Looks like you haven't placed any orders yet. Start shopping!</p>
+                            <a href="index.html" class="shop-now-btn">Start Shopping</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                listEl.innerHTML = orders.map(order => {
+                    let statusClass = 'status-pending';
+                    const status = (order.orderstatus || '').toLowerCase();
+                    if (status.includes('approved')) statusClass = 'status-approved';
+                    if (status.includes('pfa')) statusClass = 'status-pfa';
+                    if (status.includes('cancel')) statusClass = 'status-cancelled';
+
+                    // FIX: Backend uses totalamt (string with symbol), frontend looks for grandtotal (number)
+                    const cleanPrice = (v) => String(v || '0').replace(/[^\d.]/g, '');
+                    const price = parseFloat(cleanPrice(order.totalamt || order.orderamt || order.grandtotal || 0)) || 0;
+                    const payMode = order.paymentMode || order.payment_mode || 'COD';
+
+                    return `
+                        <div class="order-card">
+                            <div class="order-top">
+                                <div>
+                                    <div class="order-id">#${order.refno}</div>
+                                    <div class="order-date"><i class="far fa-calendar-alt"></i> ${order.orderdate}</div>
+                                </div>
+                                <span class="status-badge ${statusClass}">${order.orderstatus}</span>
+                            </div>
+                            <div class="order-details-grid">
+                                <div class="address-info">
+                                    <h4><i class="fas fa-map-marker-alt"></i> Shipping To</h4>
+                                    <p>${order.shipAddress || 'Address details in order summary'}</p>
+                                </div>
+                                <div class="status-info">
+                                    <h4>Total Pay</h4>
+                                    <div style="font-weight: 900; font-size: 20px; color: var(--primary);">₹${price.toLocaleString('en-IN')}</div>
+                                </div>
+                                <div class="status-info">
+                                    <h4>Payment</h4>
+                                    <div style="font-weight: 700; color: #2ecc71;"><i class="fas fa-check-circle"></i> ${payMode}</div>
+                                </div>
+                            </div>
+                            <div class="order-actions">
+                                <button class="btn-view" onclick="viewOrderDetails('${order.refno}')"><i class="far fa-list-alt"></i> Full Details</button>
+                                <button class="btn-view" style="color:var(--primary);" onclick="window.trackOrder('${order.refno}')"><i class="fas fa-truck"></i> Track</button>
+                                <button class="btn-view" style="color:var(--secondary);" onclick="window.initiateReturn('${order.refno}')"><i class="fas fa-redo"></i> Return/Exchange</button>
+                                <button class="btn-view" style="color:#888;" onclick="window.downloadInvoice('${order.refno}')"><i class="fas fa-print"></i> Invoice</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = '<div class="empty-orders"><h2>Error loading orders. Please try again.</h2></div>';
+            }
+        }
+
+        window.downloadInvoice = (refno) => {
+            window.open(`/api/orders/invoice?orderid=${refno}`, '_blank');
+        };
+
+        // View Order Details Modal Logic
+        async function viewOrderDetails(refno) {
+            const modal = document.getElementById('detailsModal');
+            const body = document.getElementById('modalBody');
+            
+            modal.style.display = 'flex';
+            body.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+            try {
+                const res = await fetch(`/api/orders/details?refno=${refno}&userid=${userId}`);
+                const details = await res.json();
+                            // Handle all response formats
+                let items = [];
+                if (Array.isArray(details)) items = details;
+                else if (details && details.orderitems) items = details.orderitems;
+                else if (details && details.cartdata) items = details.cartdata;
+                else if (details && details.orderdata) items = details.orderdata;
+                else if (details && details.items) items = details.items;
+                
+                if (items.length > 0) {
+                    body.innerHTML = `
+                        <div style="font-size:18px; font-weight:900; margin-bottom:20px; color:var(--primary);">Items in Order #${refno}</div>
+                        <div style="max-height: 400px; overflow-y: auto; padding-right:10px;">
+                            ${items.map(item => {
+                                const clean = (v) => String(v || '0').replace(/[^\d.-]/g, '');
+                                const price = parseFloat(clean(item.itemPrice || item.price || 0));
+                                const qty = parseFloat(clean(item.itemQty || item.productQty || item.qty || 1));
+                                const amount = parseFloat(clean(item.amount)) || (price * qty);
+                                const name = (item.itemName || item.productName || item.product_name || item.productname || 'Product').trim();
+                                return `
+                                <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #eee; align-items:center;">
+                                    <div style="flex:1;">
+                                        <div style="font-weight:800; color:#333;">${name}</div>
+                                        <div style="font-size:12px; color:#888;">Qty: ${qty.toFixed(0)} &nbsp;|&nbsp; Price: &#8377;${price.toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div style="font-weight:900; color:var(--secondary);">&#8377;${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                    `;
+                } else {
+                    body.innerHTML = `
+                        <div style="text-align:center; padding:30px;">
+                            <i class="fas fa-info-circle" style="font-size:40px; color:#ddd; margin-bottom:15px;"></i>
+                            <p style="font-weight:700; color:#666;">No item details available for this order.<br><small style="color:#aaa;">Order #${refno}</small></p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                body.innerHTML = '<p style="color:red; text-align:center;">Failed to load order details. Please try again.</p>';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        window.trackOrder = async (refno) => {
+            const email = localStorage.getItem('fc_user_email');
+            try {
+                const res = await fetch(`/api/orders/track?orderid=${refno}&email=${email}&userid=${userId}`);
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    alert(`Tracking status: ${data[0].status || 'In Transit'}\nLast Update: ${data[0].location || 'Warehouse'}`);
+                } else {
+                    alert('Tracking information will be available once the order is dispatched.');
+                }
+            } catch (err) { alert('Tracking service currently down.'); }
+        };
+
+        window.initiateReturn = (refno) => {
+            const reason = prompt('Please enter reason for return/exchange:');
+            if (!reason) return;
+            const type = confirm('Click OK for Refund, Cancel for Exchange') ? 'return' : 'exchange';
+            
+            fetch('/api/order/return', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: refno, reason, type, userid: userId })
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message || 'Request submitted successfully!'))
+            .catch(err => alert('Failed to submit request.'));
+        };
+
+        if (window.updateCartDisplay) {
+            // Optional: call updateCartDisplay if needed
+        }
+        fetchOrders();
+    </script>
+
+    <!-- Visual Modal UI -->
+    <div class="modal-overlay" id="detailsModal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <div id="modalBody"></div>
+            <button onclick="closeModal()" style="width:100%; margin-top:20px; padding:12px; border-radius:30px; border:none; background:#f0f0f0; font-weight:800; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</body>
+</html>

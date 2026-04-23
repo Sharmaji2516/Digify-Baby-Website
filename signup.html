@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry B2B - Creative Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        :root {
+            --primary: #FF7D1A;
+            --boy-blue: #70D6FF;
+            --girl-pink: #FF70A6;
+            --secondary: #4facfe;
+            --success: #2ed573;
+            --bg: #FAFBFE;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            color: #2d3436;
+        }
+
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: radial-gradient(circle at top right, #fff1f1, transparent), 
+                        radial-gradient(circle at bottom left, #f1f9ff, transparent);
+        }
+
+        .signup-card {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .steps-header {
+            background: #fff;
+            padding: 30px 40px;
+            border-bottom: 1px solid #f1f2f6;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0.4;
+            transition: 0.3s;
+        }
+
+        .step-item.active { opacity: 1; }
+
+        .step-circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #747d8c;
+            border: 2px solid transparent;
+        }
+
+        .active .step-circle {
+            background: white;
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.2);
+        }
+
+        .step-text { font-weight: 800; font-size: 14px; }
+
+        .form-content { padding: 40px; }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: #a4b0be;
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-container { grid-template-columns: 1fr; }
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            display: block;
+            font-weight: 800;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #4b4b4b;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #f1f2f6;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            transition: 0.3s;
+            background: #fdfdfd;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.08);
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--boy-blue), var(--girl-pink));
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(112, 214, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(112, 214, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4b4b4b;
+            border: 2px solid #f1f2f6;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .otp-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .error-msg {
+            background: #fff5f5;
+            color: #ff4757;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            font-weight: 700;
+            font-size: 14px;
+            border-left: 5px solid #ff4757;
+        }
+
+        .success-msg {
+            background: #e7f9f3;
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            font-weight: 700;
+            font-size: 14px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .info-pill {
+            background: #f1f9ff;
+            color: #4facfe;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .floating-back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: #4b4b4b;
+            text-decoration: none;
+            z-index: 100;
+        }
+        @media (min-width: 601px) {
+            .mobile-only { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="floating-back-btn mobile-only"><i class="fas fa-chevron-left"></i></a>
+
+    <div class="signup-container">
+        <div class="signup-card">
+            
+            <div class="steps-header">
+                <div class="step-item active" id="step1Header">
+                    <div class="step-circle">1</div>
+                    <div class="step-text">Verify Mobile</div>
+                </div>
+                <div class="step-item" id="step2Header">
+                    <div class="step-circle">2</div>
+                    <div class="step-text">B2B Details</div>
+                </div>
+                <div class="step-item" id="step3Header">
+                    <div class="step-circle">3</div>
+                    <div class="step-text">Proof Upload</div>
+                </div>
+            </div>
+
+            <div class="form-content">
+                <div id="errorBox" class="error-msg"></div>
+                <div id="successBox" class="success-msg"></div>
+
+                <!-- STEP 1: MOBILE OTP -->
+                <div id="step1">
+                    <div class="info-pill">Authentication</div>
+                    <h2 class="section-title">Let's Get Started</h2>
+                    <p class="section-subtitle">Enter your mobile number to receive a verification code.</p>
+                    
+                    <div class="form-group" style="max-width: 400px; margin: 0 auto 30px;">
+                        <label>Business Mobile Number</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 15px; top: 14px; font-weight: 800; color: #aaa;">+91</span>
+                            <input type="tel" id="mobile" placeholder="7597901057" maxlength="10" style="padding-left: 55px;" required>
+                        </div>
+                    </div>
+
+                    <div id="otpInputGroup" style="display: none; max-width: 400px; margin: 0 auto 30px;">
+                        <label>Enter 6-Digit OTP</label>
+                        <input type="text" id="otp" placeholder="••••••" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 5px;" required>
+                        <p style="font-size: 12px; color: #aaa; margin-top: 10px; font-weight: 700; text-align: center;">Wait for SMS... It might take up to 30s.</p>
+                    </div>
+
+                    <div style="max-width: 400px; margin: 0 auto;">
+                        <button class="btn-primary" id="requestOtpBtn">
+                            <span>Request OTP</span> <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <button class="btn-primary" id="verifyOtpBtn" style="display: none;">
+                            <span>Verify & Continue</span> <i class="fas fa-check-double"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: BUSINESS DETAILS -->
+                <div id="step2" style="display: none;">
+                    <div class="info-pill">Business Profile</div>
+                    <h2 class="section-title">About Your Business</h2>
+                    <p class="section-subtitle">Fill in your basic store and owner information.</p>
+
+                    <div class="grid-container">
+                        <div class="form-group">
+                            <label>Owner First Name</label>
+                            <input type="text" id="fname" placeholder="Kavya" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Owner Last Name</label>
+                            <input type="text" id="lname" placeholder="Sharma" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Store / Firm Name</label>
+                            <input type="text" id="storeName" placeholder="My Wholesale Hub" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Register Account As</label>
+                            <select id="userType" required>
+                                <option value="Customer" selected>Registered Customer / Retailer</option>
+                                <option value="Dealer">Distribution Partner (Dealer)</option>
+                                <option value="Seller">Marketplace Vendor (Seller)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Business Email Address</label>
+                            <input type="email" id="email" placeholder="kavya@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Set Login Password</label>
+                            <input type="password" id="regPassword" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="nextStep(3)">
+                        <span>Continue to Address</span> <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-secondary" onclick="prevStep(1)">Go Back</button>
+                </div>
+
+                <!-- STEP 3: ADDRESS & DOCUMENTS -->
+                <div id="step3" style="display: none;">
+                    <div class="info-pill">Final Verifications</div>
+                    <h2 class="section-title">Official Details</h2>
+                    <p class="section-subtitle">Provide your address and GST information for approval.</p>
+
+                    <div class="grid-container">
+                        <div class="form-group">
+                            <label>State</label>
+                            <select id="state" required>
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <select id="city" required>
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Full Business Address</label>
+                            <input type="text" id="address" placeholder="123 Wholesale Market, Building A" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pincode</label>
+                            <input type="text" id="pincode" placeholder="302001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>GST Number</label>
+                            <input type="text" id="gstno" placeholder="08AAAAA0000A1Z5" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Proof Type (GST / Shop Act)</label>
+                            <input type="text" id="document_name" placeholder="Enter document name/number" required>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="completeRegBtn">
+                        <span>Register Business</span> <i class="fas fa-star"></i>
+                    </button>
+                    <button class="btn-secondary" onclick="prevStep(2)">Back to Profile</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; font-weight: 700; font-size: 14px; color: #aaa;">
+                    Already have an account? <a href="login.html" style="color: var(--primary); text-decoration: none;">Login Here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userMobile = '';
+
+        function nextStep(step) {
+            document.querySelectorAll('#step1, #step2, #step3').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.step-item').forEach(h => h.classList.remove('active'));
+            
+            document.getElementById('step' + step).style.display = 'block';
+            document.getElementById('step' + step + 'Header').classList.add('active');
+        }
+
+        function prevStep(step) {
+            nextStep(step);
+        }
+
+        // Error/Success Helpers
+        const showAlert = (msg, type = 'error') => {
+            const box = document.getElementById(type === 'error' ? 'errorBox' : 'successBox');
+            box.textContent = msg;
+            box.style.display = 'block';
+            setTimeout(() => box.style.display = 'none', 5000);
+        };
+
+        // Populate States
+        async function loadStates() {
+            try {
+                const res = await fetch('/api/states');
+                const states = await res.json();
+                const stateSelect = document.getElementById('state');
+                states.forEach(state => {
+                    const opt = document.createElement('option');
+                    opt.value = state.state;
+                    opt.textContent = state.state;
+                    stateSelect.appendChild(opt);
+                });
+            } catch (err) { console.error('Failed to load states'); }
+        }
+        loadStates();
+
+        document.getElementById('state').addEventListener('change', async (e) => {
+            const cityName = e.target.value;
+            const citySelect = document.getElementById('city');
+            citySelect.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const res = await fetch(`/api/cities/${cityName}`);
+                const cities = await res.json();
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                cities.forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city.city;
+                    opt.textContent = city.city;
+                    citySelect.appendChild(opt);
+                });
+            } catch (err) { citySelect.innerHTML = '<option value="">Error loading</option>'; }
+        });
+
+        // OTP Request
+        document.getElementById('requestOtpBtn').addEventListener('click', async () => {
+            const mobile = document.getElementById('mobile').value;
+            if (!mobile || mobile.length < 10) return showAlert('Valid mobile required');
+            
+            const btn = document.getElementById('requestOtpBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/register/otp-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile })
+                });
+                const data = await res.json();
+                const result = Array.isArray(data) ? data[0] : data;
+
+                if (result.success || result.status === 'ok') {
+                    showAlert('OTP Sent! Check your mobile.', 'success');
+                    userMobile = mobile;
+                    document.getElementById('otpInputGroup').style.display = 'block';
+                    document.getElementById('verifyOtpBtn').style.display = 'flex';
+                    btn.style.display = 'none';
+                } else {
+                    showAlert(result.error || 'User may already exist or number invalid');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Request OTP <i class="fas fa-paper-plane"></i>';
+                }
+            } catch (err) { 
+                showAlert('Server error. Try again later.');
+                btn.disabled = false;
+                btn.innerHTML = 'Request OTP <i class="fas fa-paper-plane"></i>';
+            }
+        });
+
+        // OTP Verify
+        document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
+            const otp = document.getElementById('otp').value;
+            if (!otp) return showAlert('Please enter OTP');
+
+            const btn = document.getElementById('verifyOtpBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/register/otp-verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile: userMobile, otp })
+                });
+                const data = await res.json();
+                const result = Array.isArray(data) ? data[0] : data;
+
+                if (result.success || result.message === 'OTP Verified') {
+                    showAlert('Mobile Verified!', 'success');
+                    nextStep(2);
+                } else {
+                    showAlert('Invalid OTP. Please check and try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Verify & Continue <i class="fas fa-check-double"></i>';
+                }
+            } catch (err) { 
+                showAlert('Verification failed. Try again.'); 
+                btn.disabled = false;
+                btn.innerHTML = 'Verify & Continue <i class="fas fa-check-double"></i>';
+            }
+        });
+
+        // Final Complete
+        document.getElementById('completeRegBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('completeRegBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            btn.disabled = true;
+
+            const userData = {
+                firm_name: document.getElementById('storeName').value,
+                contact_person: document.getElementById('fname').value + ' ' + document.getElementById('lname').value,
+                email_id: document.getElementById('email').value,
+                contact_number: userMobile,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+                address: document.getElementById('address').value,
+                pincode: document.getElementById('pincode').value,
+                gstin_number: document.getElementById('gstno').value,
+                gstin_file: document.getElementById('document_name').value,
+                user_type: document.getElementById('userType').value,
+                password: document.getElementById('regPassword').value,
+            };
+
+            try {
+                const res = await fetch('/api/register/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                const data = await res.json();
+                const result = Array.isArray(data) ? data[0] : data;
+
+                if (result.success || result.status === 'ok') {
+                    window.location.href = 'login.html?msg=Registration%20Successful!%20Please%20Login';
+                } else {
+                    showAlert(result.error || 'Registration failed. Check your data.');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Register Business <i class="fas fa-star"></i>';
+                }
+            } catch (err) { 
+                showAlert('Signup failed. Network error.'); 
+                btn.disabled = false;
+                btn.innerHTML = 'Register Business <i class="fas fa-star"></i>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - Category</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css?v=3.0">
+</head>
+<body>
+    <div class="top-bar">🎉 Free Shipping on Orders above ₹699! 🚚 | Same Day Delivery in Select Cities</div>
+    <header class="navbar has-back-btn">
+        <!-- New Back Button for Mobile -->
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+        </a>
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search for Category, Brand or Product..." id="searchInput">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <div class="nav-links desktop-only">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="orders.html"><i class="fas fa-map-marker-alt"></i> Track Order</a>
+            <div id="authWrapper">
+                <a href="login.html" id="loginLink"><i class="fas fa-user"></i> Login</a>
+            </div>
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCountDesktop" class="badge">0</span></a>
+        </div>
+        <div class="nav-links cart-only">
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+            <div class="hamburger" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-menu" id="closeMenu"><i class="fas fa-times"></i></div>
+        <div class="logo">
+            <a href="index.html" style="text-decoration: none;">
+                <span class="first">First</span><span class="cry">Cry</span>
+            </a>
+        </div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="orders.html"><i class="fas fa-map-marker-alt"></i> Track Order</a></li>
+            <hr style="opacity: 0.1; margin: 10px 0;">
+            <div id="mobileDynamicCats"></div>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+        </ul>
+    </div>
+    <!-- Category navigation bar removed as requested -->
+    <main class="category-main-layout" style="grid-template-columns: 1fr; max-width: 1600px; padding-top: 20px;">
+        <section class="content-area">
+            <div id="catBanner" class="cat-banner"></div>
+            <div class="all-categories-wrapper">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 30px;">
+                    <div id="catTitle" class="cat-page-title" style="margin-bottom: 0;"></div>
+                    <div id="dynamicFilters" class="horizontal-filters" style="display: flex; gap: 15px; align-items: center; border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fff;">
+                        <!-- Brands, Colors, etc. will be injected here -->
+                        <span style="color: #999; font-size: 14px;">Loading Filters...</span>
+                    </div>
+                </div>
+                <div class="product-grid" id="productGrid">
+                    <div class="loading"><div class="spinner"></div> Loading...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-bottom"><p>&copy; 2026 FirstCry Clone - All rights reserved. | Developed and Maintained  By Kush Sharma  ( Digisoft Solutions )</p></div>
+    </footer>
+
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html" class="active"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Cart</span><span id="cartCountMobileBottom" class="dot" style="display:none;"></span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script src="./data.js"></script>
+    <script src="./nav.js?v=2.3"></script>
+    <script src="./category.js?v=2.3"></script>
+</body>
+</html>

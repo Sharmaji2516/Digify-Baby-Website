@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - Product Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (max-width: 992px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .info-section {
+                align-items: center;
+                text-align: center;
+            }
+
+            .price-wrap, .action-row {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .rating {
+                justify-content: center;
+            }
+
+            .meta-list {
+                justify-items: center;
+            }
+
+            .meta-item {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        .gallery-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .main-img-container {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+        }
+
+        .main-img-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .thumb-row {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .thumb-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            object-fit: cover;
+            background: #f9f9f9;
+            transition: var(--transition);
+        }
+
+        .thumb-img.active {
+            border-color: var(--primary);
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .brand-label {
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .product-name {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--accent);
+        }
+
+        .price-wrap {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .current-price {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--text-dark);
+        }
+
+        .mrp-price {
+            font-size: 20px;
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .discount-badge {
+            background: var(--primary);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .desc-box {
+            margin: 20px 0;
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .qty-input {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 5px 15px;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-dark);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-val {
+            font-weight: 900;
+            font-size: 18px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .main-add-btn {
+            flex: 1;
+            background: var(--primary); /* Fallback */
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .main-add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,107,107,0.4);
+        }
+
+        @keyframes pulse-light {
+            0% { box-shadow: 0 0 0 0 rgba(255, 125, 26, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 125, 26, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 125, 26, 0); }
+        }
+
+        .main-add-btn {
+            animation: pulse-light 2s infinite;
+            background: var(--gradient) !important;
+            background-color: var(--primary) !important;
+            color: white !important;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding-bottom: 160px !important; /* Huge space for both bars */
+            }
+            .product-detail-container {
+                padding: 15px;
+                border-radius: 0;
+                margin: 0;
+            }
+            .product-name { font-size: 24px; }
+            .current-price { font-size: 28px; }
+            
+            /* Sticky Mobile Add to Cart Bar */
+            .action-row {
+                position: fixed;
+                bottom: 65px; /* Stay EXACTLY above mobile-bottom-nav */
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 10px 20px;
+                box-shadow: 0 -8px 25px rgba(0,0,0,0.1);
+                z-index: 1004; /* Below bottom-nav (1005) but high enough */
+                margin: 0 !important;
+                border-top: 1px solid #f0f0f0;
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .main-add-btn {
+                padding: 14px 20px !important;
+                font-size: 15px !important;
+                flex: 2;
+            }
+            .qty-input {
+                flex: 1;
+                max-width: 120px;
+            }
+
+            /* Responsive Reviews */
+            .reviews-container {
+                padding: 20px !important;
+                margin: 30px 10px !important;
+                border-radius: 20px !important;
+            }
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .reviews-header h2 { font-size: 22px; }
+            .rating-v2 { gap: 10px; }
+            .avg-score { font-size: 32px; }
+            
+            .review-content-v2 { 
+                padding-left: 0 !important; 
+                margin-top: 10px;
+            }
+            .review-meta { gap: 12px; }
+            
+            .add-review-box { padding: 20px !important; }
+            .star-rating-input { 
+                font-size: 24px !important; 
+                gap: 8px !important; 
+            }
+        }
+
+        .meta-list {
+            list-style: none;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .meta-item b {
+            color: var(--text-dark);
+            min-width: 100px;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Reviews Styling */
+        /* Reviews Styling - Premium V2 */
+        .reviews-container { 
+            max-width: 1200px; 
+            margin: 60px auto; 
+            background: white; 
+            border-radius: 40px; 
+            padding: 50px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.05); 
+        }
+        .reviews-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f9f9f9;
+        }
+        .reviews-header h2 { font-weight: 900; font-size: 28px; color: var(--text-dark); }
+        
+        .rating-v2 { display: flex; align-items: center; gap: 20px; }
+        .avg-score { font-size: 42px; font-weight: 900; color: var(--text-dark); }
+        .stars-wrap { color: #ffbc00; font-size: 20px; display: flex; gap: 4px; }
+        .total-text { font-size: 16px; color: #888; font-weight: 700; }
+
+        .review-item-v2 { padding: 30px 0; border-bottom: 1px solid #f5f5f5; }
+        .review-item-v2:last-child { border-bottom: none; }
+        
+        .review-meta { display: flex; align-items: center; gap: 20px; margin-bottom: 15px; }
+        .reviewer-avatar { 
+            width: 50px; height: 50px; border-radius: 50%; background: #eef2ff; color: var(--secondary);
+            display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px;
+            border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .reviewer-info h4 { font-weight: 800; font-size: 16px; margin: 0; }
+        .review-stars-v2 { color: #ffbc00; font-size: 12px; margin-top: 4px; }
+        .review-date { margin-left: auto; font-size: 13px; color: #aaa; font-weight: 700; }
+        .review-content-v2 { font-size: 16px; color: #555; line-height: 1.8; padding-left: 70px; }
+
+        .add-review-box { 
+            background: #f8fbff; border-radius: 30px; padding: 40px; margin-top: 60px;
+            border: 1px solid #e1e8f0;
+        }
+        .star-rating-input { display: flex; gap: 15px; font-size: 32px; color: #dfe6e9; cursor: pointer; margin-bottom: 30px; }
+        .star-rating-input i { transition: var(--transition); }
+        .star-rating-input i.active { color: #ffbc00; transform: scale(1.2); }
+        .star-rating-input i:hover { transform: scale(1.1); }
+
+        .login-prompt {
+            background: #fff9db; color: #856404; padding: 20px; border-radius: 15px;
+            font-weight: 800; display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+            border: 1px solid #ffeeba;
+        }
+        .login-prompt a { color: var(--primary); text-decoration: underline; }
+
+        .no-reviews { text-align: center; padding: 60px; color: #b2bec3; font-weight: 800; font-size: 18px; }
+
+        /* Notify Me Button */
+        .notify-btn {
+            background: #f1f2f6; color: #747d8c; border: none; padding: 18px;
+            border-radius: 50px; font-weight: 900; font-size: 18px; cursor: pointer;
+            width: 100%; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .notify-btn:hover { background: #dfe4ea; color: var(--text-dark); }
+    </style>
+</head>
+<body>
+
+    <header class="navbar has-back-btn">
+        <!-- New Back Button for Mobile -->
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+            <div class="logo-sub">Product Details</div>
+        </a>
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search product..." id="searchInput">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="nav-links desktop-only">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="orders.html"><i class="fas fa-box-open"></i> Orders</a>
+            <div id="authWrapper">
+                <a href="login.html" id="loginLink"><i class="fas fa-user"></i> Login</a>
+            </div>
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCountDesktop" class="badge">0</span></a>
+        </div>
+        <div class="nav-links cart-only">
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+            <div class="hamburger" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <main class="page-container" style="padding-top: 100px;">
+        <div id="productDetail" class="product-detail-container">
+            <div class="gallery-section">
+                <div class="main-img-container skeleton" id="mainImgBox">
+                    <!-- Main image here -->
+                </div>
+                <div class="thumb-row" id="thumbRow">
+                    <!-- Thumbnails here -->
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="brand-label" id="brandName">...</div>
+                <h1 class="product-name" id="productName">Loading Awesome Product...</h1>
+                
+                <div class="rating" style="font-size: 16px; color: #ffbc00;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span style="color: #888; margin-left:10px; font-weight: 400;">(4.5 | 128 Reviews)</span>
+                </div>
+
+                <div class="price-wrap">
+                    <span class="current-price" id="currPrice">₹0</span>
+                    <span class="mrp-price" id="mrpPrice">₹0</span>
+                    <span class="discount-badge" id="discBadge">0% OFF</span>
+                </div>
+
+                <div class="desc-box" id="productDesc">
+                    Our team is fetching the finest details for you. Just a moment...
+                </div>
+
+                <div class="action-row">
+                    <div class="qty-input">
+                        <div class="qty-btn" id="qtyMinus"><i class="fas fa-minus"></i></div>
+                        <div class="qty-val" id="qtyVal">1</div>
+                        <div class="qty-btn" id="qtyPlus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <button class="main-add-btn" id="addToCartBtn">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </button>
+                    <button class="qty-btn" id="wishlistBtn" onclick="toggleWishlistLarge()" style="width: 55px; height: 55px; border-radius: 50%; background: #fff5f5; color: #ff6b6b; border: 1px solid #ffe3e3;">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <button class="qty-btn" id="compareBtn" onclick="addToCompareLarge()" title="Add to Compare" style="width: 55px; height: 55px; border-radius: 50%; background: #f0fffb; color: var(--primary); border: 1px solid #d1fff5;">
+                        <i class="fas fa-plus-square"></i>
+                    </button>
+                </div>
+
+                <ul class="meta-list">
+                    <li class="meta-item"><b>Code:</b> <span id="prodCode">...</span></li>
+                    <li class="meta-item"><b>Available:</b> <span id="availability" style="color: #2ecc71; font-weight: 800;">In Stock</span></li>
+                    <li class="meta-item"><b>Seller:</b> <span id="sellerName">...</span></li>
+                    <li class="meta-item"><b>Delivery:</b> <span style="color:var(--primary); font-weight: 800;">Express 2-Day Shipping</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="reviews-container">
+            <div class="reviews-header">
+                <h2>Customer Reviews ⭐</h2>
+                <div id="reviewStats" style="font-weight: 800; color: #888;">Loading stats...</div>
+            </div>
+            
+            <div id="reviewsList">
+                <div style="text-align: center; color: #aaa; padding: 20px;">Fetching reviews...</div>
+            </div>
+
+            <div class="add-review-box" id="addReviewSection" style="display: none;">
+                <h3 style="font-weight: 900; margin-bottom: 10px; color: var(--text-dark);">Share your experience</h3>
+                <p style="color: #666; margin-bottom: 25px; font-weight: 700;">Rate the product and write a quick review to help others!</p>
+                
+                <div id="loginToReview"></div>
+                
+                <div class="star-rating-input" id="starInput">
+                    <i class="fas fa-star" data-val="1"></i>
+                    <i class="fas fa-star" data-val="2"></i>
+                    <i class="fas fa-star" data-val="3"></i>
+                    <i class="fas fa-star" data-val="4"></i>
+                    <i class="fas fa-star" data-val="5"></i>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <textarea id="reviewText" style="width:100%; padding:20px; border:2px solid #eef2f6; border-radius:20px; font-family:inherit; min-height: 120px; font-size: 16px; color: var(--text-dark);" placeholder="What did you like or dislike?"></textarea>
+                    <button class="main-add-btn" style="margin-top:20px; max-width: 250px;" onclick="submitReview()">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FirstCry Clone | Developed and Maintained  By Kush Sharma  ( Digisoft Solutions )</p>
+        </div>
+    </footer>
+
+    <!-- Unified Mobile Bottom Navigation -->
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Cart</span><span id="cartCountMobileBottom" class="dot" style="display:none;"></span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <!-- JS Scripts -->
+    <script src="nav.js"></script>
+    <script src="single-product.js?v=3.2"></script>
+    <script>
+        // Back to home if no product ID
+        if(!new URLSearchParams(window.location.search).has('id')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

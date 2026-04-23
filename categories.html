@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - All Categories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .categories-container { padding: 80px 5% 100px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .categories-container h1 { font-weight: 900; margin-bottom: 40px; font-size: 28px; color: #333; }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .category-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            padding: 15px;
+            border-radius: 20px;
+        }
+
+        .category-pill:active { transform: scale(0.95); }
+
+        .pill-img {
+            width: 85px;
+            height: 85px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 2px solid #fff;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .pill-img img { width: 100%; height: auto; object-fit: contain; }
+        .pill-img i { font-size: 32px; color: var(--primary); }
+
+        .category-pill span { font-weight: 800; font-size: 14px; color: #444; }
+
+        @media (max-width: 576px) {
+            .categories-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+            .pill-img { width: 75px; height: 75px; padding: 12px; }
+            .category-pill span { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar has-back-btn">
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+        </a>
+        <div class="nav-links cart-only mobile-only">
+             <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+        </div>
+    </header>
+
+    <main class="categories-container">
+        <h1>📦 All Categories</h1>
+        <div id="fullCategoryGrid" class="categories-grid">
+            <!-- Loading Skeletons -->
+            <div class="category-pill skeleton-wrapper">
+                <div class="pill-img skeleton"></div>
+                <div style="height:15px; width:60px;" class="skeleton"></div>
+            </div>
+            <div class="category-pill skeleton-wrapper">
+                <div class="pill-img skeleton"></div>
+                <div style="height:15px; width:60px;" class="skeleton"></div>
+            </div>
+            <div class="category-pill skeleton-wrapper">
+                <div class="pill-img skeleton"></div>
+                <div style="height:15px; width:60px;" class="skeleton"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html" class="active"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('fullCategoryGrid');
+            try {
+                const res = await fetch('/api/categories');
+                const categories = await res.json();
+                
+                grid.innerHTML = categories.map(c => `
+                    <div class="category-pill" onclick="location.href='category.html?id=${c.category_id}&cat=${encodeURIComponent(c.name)}'">
+                        <div class="pill-img">
+                            ${c.category_img ? `<img src="${c.category_img}">` : `<i class="fas fa-box"></i>`}
+                        </div>
+                        <span>${c.name}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = '<p>Failed to load categories.</p>';
+            }
+        });
+    </script>
+    <script src="./nav.js"></script>
+</body>
+</html>

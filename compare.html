@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - Compare Products</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        .page-container { padding: 120px 5% 40px; }
+        .compare-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
+        .compare-col { min-width: 300px; flex: 1; background: white; border-radius: 20px; box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; }
+        .compare-header { background: #fdfdfd; padding: 20px; border-bottom: 1px solid #eee; position: relative; }
+        .compare-header img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
+        .compare-header h3 { font-size: 16px; font-weight: 800; line-height: 1.4; min-height: 45px; }
+        .compare-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .spec-item { padding-bottom: 10px; border-bottom: 1px solid #f9f9f9; }
+        .spec-label { font-size: 11px; color: #888; font-weight: 700; text-transform: uppercase; }
+        .spec-val { font-size: 14px; font-weight: 600; margin-top: 4px; color: #333; }
+        .remove-compare { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.05); border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; color: #999; }
+        .remove-compare:hover { color: #f44336; }
+    </style>
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="page-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+            <h1 style="font-weight: 900;">Compare Products 🔍</h1>
+            <button onclick="clearComparison()" style="background:#eee; border:none; padding:10px 20px; border-radius:50px; font-weight:700; cursor:pointer;">Clear All</button>
+        </div>
+
+        <div id="compareGrid" class="compare-grid">
+            <div style="text-align: center; width: 100%; color: #888; padding: 100px;">
+                <i class="fas fa-plus-circle" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
+                <h2>No products added for comparison.</h2>
+                <p>Go back to products and click "Compare" to see them here.</p>
+                <a href="index.html" class="main-add-btn" style="display:inline-flex; width:auto; margin-top:20px;">Return to Shopping</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadComparison);
+
+        async function loadComparison() {
+            const list = JSON.parse(localStorage.getItem('fc_compare_list') || '[]');
+            const grid = document.getElementById('compareGrid');
+
+            if (list.length === 0) return;
+
+            grid.innerHTML = '<div style="text-align:center; width:100%; padding:50px;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+            try {
+                const res = await fetch(`/api/products/compare?ids=${list.join(',')}`);
+                const products = await res.json();
+
+                grid.innerHTML = products.map(p => `
+                    <div class="compare-col">
+                        <div class="compare-header">
+                            <button class="remove-compare" onclick="removeFromCompare('${p.id}')"><i class="fas fa-times"></i></button>
+                            <img src="${p.image || 'https://via.placeholder.com/300'}" alt="${p.name}">
+                            <h3>${p.name}</h3>
+                        </div>
+                        <div class="compare-body">
+                            <div class="spec-item">
+                                <div class="spec-label">Price</div>
+                                <div class="spec-val" style="color:var(--primary); font-size:18px;">${p.price}</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Brand</div>
+                                <div class="spec-val">${p.brand}</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Specifications</div>
+                                <div class="spec-val" style="font-size:12px; font-weight:400; color:#666;">${p.specs}</div>
+                            </div>
+                            <button class="main-add-btn" style="padding:10px; font-size:14px;" onclick="window.location.href='single-product.html?id=${p.id}'">View Details</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = '<p>Failed to load comparison.</p>';
+            }
+        }
+
+        function removeFromCompare(id) {
+            let list = JSON.parse(localStorage.getItem('fc_compare_list') || '[]');
+            list = list.filter(item => item !== id);
+            localStorage.setItem('fc_compare_list', JSON.stringify(list));
+            loadComparison();
+        }
+
+        function clearComparison() {
+            localStorage.setItem('fc_compare_list', '[]');
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

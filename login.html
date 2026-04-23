@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry B2B - Creative Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        :root {
+            --fc-pink: #ff6b6b;
+            --fc-blue: #4facfe;
+            --fc-purple: #00f2fe;
+            --glass: rgba(255, 255, 255, 0.85);
+            --shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #fdfdfd;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .auth-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ─── Left Side Visuals ─── */
+        .visual-side {
+            flex: 1.2;
+            background: linear-gradient(135deg, var(--fc-pink), #ff9a9e);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .visual-side::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            animation: float 8s infinite alternate;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+
+        .visual-content h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .visual-content p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1.0); }
+            100% { transform: translateY(40px) scale(1.1); }
+        }
+
+        /* ─── Right Side Form ─── */
+        .form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: white;
+            position: relative;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .logo-box {
+            margin-bottom: 40px;
+        }
+
+        .logo-box .first { font-size: 32px; font-weight: 900; color: #444; }
+        .logo-box .cry { font-size: 32px; font-weight: 900; color: var(--fc-pink); }
+
+        .form-header h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #a4b0be;
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 800;
+            color: #4a4a4a;
+            margin-bottom: 10px;
+            padding-left: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2.5px solid #f1f2f6;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fdfdfd;
+        }
+
+        .input-group input:focus {
+            border-color: var(--fc-pink);
+            background: white;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.1);
+            outline: none;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 18px;
+            border: none;
+            background: linear-gradient(to right, var(--fc-pink), #ff4757);
+            color: white;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4);
+        }
+
+        .auth-btn:active { transform: translateY(0); }
+
+        .auth-btn:disabled {
+            background: #dfe4ea;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .footer-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .footer-options a {
+            color: var(--fc-pink);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .footer-options a:hover { text-decoration: underline; }
+
+        .error-box {
+            background: #fffafa;
+            border-left: 4px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: none;
+            color: #d63031;
+            font-weight: 700;
+            font-size: 14px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 992px) {
+            .visual-side { display: none; }
+            .mobile-only { display: block; }
+        }
+        .mobile-only { display: none; position: absolute; top: 20px; left: 20px; z-index: 10; font-size: 20px; color: #333; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="floating-back-btn mobile-only"><i class="fas fa-arrow-left"></i></a>
+
+    <div class="auth-wrapper">
+        <div class="visual-side">
+            <div class="visual-content">
+                <h1>Step into<br>Growth.</h1>
+                <p>Access the largest B2B collection for kids & babies in Asia. Empower your business with FirstCry.</p>
+            </div>
+        </div>
+
+        <div class="form-side">
+            <div class="login-card">
+                <div class="logo-box">
+                    <span class="first">First</span><span class="cry">Cry</span>
+                    <div style="font-size: 12px; font-weight: 800; color: #aaa; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">B2B Wholesale Portal</div>
+                </div>
+
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your business credentials to continue</p>
+                </div>
+
+                <div id="errorBox" class="error-box"></div>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label><i class="fas fa-id-card"></i> Mobile or Email</label>
+                        <input type="text" id="eid" placeholder="e.g. 7597901057" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="submitBtn">
+                        <i class="fas fa-spinner fa-spin" id="spinner" style="display: none;"></i>
+                        <span>Login to Portal</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="footer-options">
+                    <a href="#" id="signupLink">Create Business Account</a>
+                    <a href="forgot-password.html">Forgot Password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set signup link with redirect preservation
+        document.getElementById('signupLink').href = `signup.html${window.location.search}`;
+
+        // Check for message in URL (e.g. from registration)
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        if (msg) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+            errorBox.style.background = '#e7f9f3';
+            errorBox.style.color = '#27ae60';
+            errorBox.style.borderLeftColor = '#27ae60';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const eid = document.getElementById('eid').value;
+            const password = document.getElementById('password').value;
+            const errorBox = document.getElementById('errorBox');
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('spinner');
+
+            errorBox.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            submitBtn.disabled = true;
+
+            try {
+                const sid = localStorage.getItem('fc_user_id') || ('GUEST_' + Math.random().toString(36).substr(2, 9));
+                
+                const res = await fetch(`/api/login?eid=${encodeURIComponent(eid)}&password=${encodeURIComponent(password)}&sid=${encodeURIComponent(sid)}&page_nav=${encodeURIComponent('User login')}`, {
+                    method: 'GET'
+                });
+                
+                const data = await res.json();
+                
+                let user = null;
+                if (Array.isArray(data) && data.length > 0) user = data[0];
+                else if (data && typeof data === 'object' && !Array.isArray(data)) user = data;
+
+                if (user && !user.error && (user.userid || user.uid)) {
+                    localStorage.setItem('fc_user_id', (user.userid || user.uid).toString().trim());
+                    localStorage.setItem('fc_user_name', (user.name || user.username || 'Business User').trim());
+                    
+                    const redirectUrl = urlParams.get('redirect') || 'index.html';
+                    window.location.href = redirectUrl;
+                } else {
+                    errorBox.textContent = (user && user.error) ? user.error : 'Invalid Credentials. Please try your mobile number.';
+                    errorBox.style.display = 'block';
+                    errorBox.style.background = '#fffafa';
+                    errorBox.style.color = '#d63031';
+                    errorBox.style.borderLeftColor = '#ff4d4d';
+                }
+            } catch (err) {
+                errorBox.textContent = 'Network or Server Error. Please try again.';
+                errorBox.style.display = 'block';
+            } finally {
+                spinner.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - My Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .profile-container { padding: 40px 5%; max-width: 1000px; margin: 0 auto; }
+        .profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+        @media (max-width: 768px) { .profile-layout { grid-template-columns: 1fr; } }
+        
+        .profile-sidebar { background: white; border-radius: 20px; padding: 30px; box-shadow: var(--shadow-sm); height: fit-content; }
+        .profile-nav { list-style: none; margin-top: 20px; }
+        .profile-nav li { margin-bottom: 10px; }
+        .profile-nav a { text-decoration: none; color: #666; font-weight: 700; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; transition: var(--transition); }
+        .profile-nav a:hover, .profile-nav a.active { background: #fff5f5; color: var(--primary); }
+        
+        .profile-card { background: white; border-radius: 20px; padding: 40px; box-shadow: var(--shadow-sm); }
+        .profile-card h2 { font-weight: 900; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .profile-card h2 i { color: var(--secondary); }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 576px) { .form-grid { grid-template-columns: 1fr; } }
+        
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-weight: 700; color: #555; margin-bottom: 8px; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px 15px; border: 2px solid #f0f0f0; border-radius: 12px; font-family: inherit; }
+        .form-group input:disabled { background: #f9f9f9; cursor: not-allowed; }
+        
+        .btn-update { background: var(--secondary); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: 800; cursor: pointer; transition: var(--transition); }
+        .btn-update:hover { background: #3bbcb3; transform: scale(1.02); }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Wallet Mobile Optimizations */
+        .wallet-card {
+            background: var(--gradient);
+            padding: 30px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tx-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #f9f9f9;
+            align-items: center;
+            gap: 15px;
+        }
+        .tx-info { flex: 1; min-width: 0; }
+        .tx-remark { font-weight: 800; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tx-date { font-size: 11px; color: #888; }
+        .tx-amount { font-weight: 900; font-size: 15px; white-space: nowrap; }
+        .tx-amount.credit { color: #2ecc71; }
+        .tx-amount.debit { color: #e74c3c; }
+
+        @media (max-width: 600px) {
+            .wallet-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+                padding: 20px;
+            }
+            .wallet-card div #walletBalance { font-size: 32px !important; }
+            .tx-remark { font-size: 13px; white-space: normal; }
+            .tx-amount { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar has-back-btn">
+        <!-- New Back Button for Mobile -->
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+        </a>
+        <div class="nav-links desktop-only">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="orders.html"><i class="fas fa-box"></i> Orders</a>
+        </div>
+        <div class="nav-links cart-only mobile-only">
+             <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+             <div class="hamburger" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <div class="profile-layout">
+            <aside class="profile-sidebar">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin: 0 auto 15px;" id="userInitial">U</div>
+                    <h3 id="sidebarName" style="font-weight: 900;">User Name</h3>
+                    <p id="sidebarEmail" style="font-size: 13px; color: #888;">user@example.com</p>
+                </div>
+                <ul class="profile-nav">
+                    <li><a href="#" class="active" onclick="showSection('editProfile', this)"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                    <li><a href="#" onclick="showSection('manageAddresses', this)"><i class="fas fa-map-marked-alt"></i> Manage Addresses</a></li>
+                    <li><a href="#" onclick="showSection('myWallet', this)"><i class="fas fa-wallet"></i> My Wallet</a></li>
+                    <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                    <li><a href="#" onclick="showSection('returns', this)"><i class="fas fa-redo-alt"></i> Returns & Exchanges</a></li>
+                    <li><a href="#" onclick="showSection('changePassword', this)"><i class="fas fa-key"></i> Change Password</a></li>
+                    <li><hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;"></li>
+                    <li><a href="#" onclick="handleLogout()" style="color: #ff6b6b;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </aside>
+
+            <div class="profile-content">
+                <!-- Edit Profile Section -->
+                <div id="editProfile" class="profile-card section active">
+                    <h2><i class="fas fa-id-card"></i> Personal Information</h2>
+                    <form id="profileForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="profName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" id="profMobile" disabled>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Email Address</label>
+                                <input type="email" id="profEmail" disabled>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-update" id="profileUpdateBtn">Update Profile</button>
+                    </form>
+                </div>
+
+                <!-- Manage Addresses Section -->
+                <div id="manageAddresses" class="profile-card section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h2 style="margin: 0;"><i class="fas fa-map-marked-alt"></i> Saved Addresses</h2>
+                        <button class="btn-update" style="padding: 10px 20px; font-size: 14px;" onclick="openAddressModal()">+ Add New</button>
+                    </div>
+                    <div id="addressList" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        <p style="color: #888; text-align: center; padding: 20px;">Loading addresses...</p>
+                    </div>
+                </div>
+                <!-- My Wallet Section -->
+                <div id="myWallet" class="profile-card section">
+                    <h2><i class="fas fa-wallet"></i> My Wallet</h2>
+                    <div class="wallet-card">
+                        <div>
+                            <div style="font-size: 14px; opacity: 0.9; font-weight: 700;">Available Balance</div>
+                            <div style="font-size: 36px; font-weight: 900;" id="balanceDisplay">₹0.00</div>
+                        </div>
+                        <button class="btn-update" style="background: rgba(255,255,255,0.2); border: 1px solid white;" onclick="alert('Coming soon')">Add Money</button>
+                    </div>
+                </div>
+
+                <!-- Returns & Exchanges Section -->
+                <div id="returns" class="profile-card section">
+                    <h2><i class="fas fa-redo-alt"></i> Returns & Exchanges</h2>
+                    <p style="color: #888; margin-bottom: 30px;">Track your return and exchange requests here.</p>
+                    <div id="returnsList">
+                        <div style="text-align: center; padding: 40px; border: 2px dashed #eee; border-radius: 20px;">
+                            <i class="fas fa-box-open" style="font-size: 40px; color: #eee; margin-bottom: 15px;"></i>
+                            <p style="color: #aaa; font-weight: 700;">No active return requests found.</p>
+                            <a href="orders.html" class="btn-update" style="display: inline-block; margin-top: 15px; text-decoration: none;">View Orders to Return</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password Section -->
+                <div id="changePassword" class="profile-card section">
+                    <h2><i class="fas fa-shield-alt"></i> Change Password</h2>
+                    <p style="color: #888; font-size: 14px; margin-bottom: 30px;">Update your password regularly to keep your account secure.</p>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label>Old Password</label>
+                            <input type="password" id="oldPass" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPass" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="confirmPass" required>
+                        </div>
+                        <button type="submit" class="btn-update" id="passUpdateBtn">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Address Modal -->
+    <div id="addressModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10002; align-items:center; justify-content:center;">
+        <div class="profile-card" style="width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;">
+            <button onclick="closeAddressModal()" style="position:absolute; top:20px; right:20px; border:none; background:none; font-size:24px; cursor:pointer; color:#888;">&times;</button>
+            <h2 id="modalTitle"><i class="fas fa-map-marker-alt"></i> Add New Address</h2>
+            <form id="addressForm">
+                <input type="hidden" id="addrId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Receiver's Name</label>
+                        <input type="text" id="addrName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="text" id="addrMobile" required>
+                    </div>
+                    <div class="form-group full" style="grid-column: 1 / -1;">
+                        <label>Address (Flat/Building/Street)</label>
+                        <textarea id="addrLocality" rows="3" style="width:100%; padding:12px; border:2px solid #f0f0f0; border-radius:12px;" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <select id="addrCity" style="width:100%; padding:12px; border:2px solid #f0f0f0; border-radius:12px;">
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <input type="text" id="addrPincode" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="addrState" onchange="fetchCities(this.value)" style="width:100%; padding:12px; border:2px solid #f0f0f0; border-radius:12px;">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Address Type</label>
+                        <div style="display:flex; gap:15px; padding-top:10px;">
+                            <label style="display:flex; align-items:center; gap:5px; font-weight:normal;"><input type="radio" name="addrType" value="Home" checked> Home</label>
+                            <label style="display:flex; align-items:center; gap:5px; font-weight:normal;"><input type="radio" name="addrType" value="Office"> Office</label>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:15px; margin-top:20px;">
+                    <button type="submit" class="btn-update" id="addrSubmitBtn" style="flex:1;">Save Address</button>
+                    <button type="button" class="btn-update" style="background:#eee; color:#666; flex:1;" onclick="closeAddressModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FirstCry Clone | Developed and Maintained  By Kush Sharma  ( Digisoft Solutions )</p>
+        </div>
+    </footer>
+
+    <!-- Unified Mobile Bottom Navigation -->
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Cart</span><span id="cartCountMobileBottom" class="dot" style="display:none;"></span></a>
+        <a href="profile.html" class="active"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script src="nav.js"></script>
+    <script>
+        const userId = localStorage.getItem('fc_user_id');
+        if (!userId || userId.startsWith('GUEST_')) {
+            window.location.href = 'login.html';
+        }
+
+        async function fetchStates() {
+            const select = document.getElementById('addrState');
+            if (select.options.length > 1) return; // Already loaded
+
+            try {
+                const res = await fetch('/api/states');
+                const states = await res.json();
+                if (Array.isArray(states)) {
+                    select.innerHTML = '<option value="">Select State</option>' + 
+                        states.map(s => `<option value="${s.state}">${s.state}</option>`).join('');
+                }
+            } catch (err) { console.error('States fail:', err); }
+        }
+
+        async function fetchCities(stateName) {
+            const select = document.getElementById('addrCity');
+            select.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const res = await fetch(`/api/cities/${encodeURIComponent(stateName)}`);
+                const cities = await res.json();
+                if (Array.isArray(cities)) {
+                    select.innerHTML = '<option value="">Select City</option>' + 
+                        cities.map(c => `<option value="${c.city || c.city_name}">${c.city || c.city_name}</option>`).join('');
+                } else {
+                    select.innerHTML = '<option value="">Manual Entry Required</option>';
+                }
+            } catch (err) { select.innerHTML = '<option value="">Failed to load cities</option>'; }
+        }
+
+        function showSection(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('.profile-nav a').forEach(a => a.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (id === 'manageAddresses') {
+                loadAddresses();
+            }
+        }
+
+        async function loadProfile() {
+            // Fill from localStorage first for speed
+            const name = localStorage.getItem('fc_user_name') || 'User';
+            const email = localStorage.getItem('fc_user_email') || '';
+            const mobile = localStorage.getItem('fc_user_mobile') || '';
+
+            document.getElementById('sidebarName').textContent = name;
+            document.getElementById('profName').value = name;
+            document.getElementById('sidebarEmail').textContent = email;
+            document.getElementById('profEmail').value = email;
+            document.getElementById('profMobile').value = mobile;
+            document.getElementById('userInitial').textContent = name.charAt(0).toUpperCase();
+
+            // Try to fetch fresh data from API
+            try {
+                const res = await fetch(`/api/profile?userid=${userId}`);
+                const data = await res.json();
+                if (data[0] && data[0].username) {
+                    const user = data[0];
+                    document.getElementById('profName').value = user.username;
+                    document.getElementById('sidebarName').textContent = user.username;
+                    localStorage.setItem('fc_user_name', user.username);
+                }
+            } catch (err) { console.error('API Profile fail:', err); }
+        }
+
+        document.getElementById('profileForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('profileUpdateBtn');
+            const name = document.getElementById('profName').value;
+            
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+
+            try {
+                const res = await fetch('/api/profile/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userid: userId,
+                        username: name,
+                        email: document.getElementById('profEmail').value,
+                        mobile: document.getElementById('profMobile').value
+                    })
+                });
+                const result = await res.json();
+                if (result[0]?.success || result.status === 'ok') {
+                    alert('Profile updated successfully!');
+                    localStorage.setItem('fc_user_name', name);
+                    loadProfile();
+                } else {
+                    alert('Failed: ' + (result[0]?.error || 'Unknown error'));
+                }
+            } catch (err) {
+                alert('Server error.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Profile';
+            }
+        };
+
+        document.getElementById('passwordForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const oldPass = document.getElementById('oldPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confirmPass = document.getElementById('confirmPass').value;
+
+            if (newPass !== confirmPass) return alert('New passwords do not match');
+            if (newPass.length < 6) return alert('Password too short');
+
+            const btn = document.getElementById('passUpdateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+
+            try {
+                const res = await fetch('/api/password/change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userid: userId,
+                        oldPass,
+                        newPass
+                    })
+                });
+                const result = await res.json();
+                if (result[0]?.response && result[0].response.toLowerCase().includes('success')) {
+                    alert('Password changed successfully!');
+                    document.getElementById('passwordForm').reset();
+                    showSection('editProfile', document.querySelector('.profile-nav a'));
+                } else {
+                    alert('Failed: ' + (result[0]?.response || 'Incorrect old password'));
+                }
+            } catch (err) {
+                alert('Server error.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Password';
+            }
+        };
+
+        function handleLogout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+
+
+        // --- Address Management Functions ---
+        async function loadAddresses() {
+            const listEl = document.getElementById('addressList');
+            listEl.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Loading addresses...</p>';
+            try {
+                const res = await fetch(`/api/addresses?userid=${userId}`);
+                const data = await res.json();
+                
+                // API might return an error object inside addressdata like [{"response": "No address recorded..."}]
+                let addresses = (data.addressdata || []).filter(addr => addr.addressid);
+                
+                if (addresses.length === 0) {
+                    listEl.innerHTML = `<p style="color: #888; text-align: center; padding: 20px;">No saved addresses found (User ID: ${userId}).</p>`;
+                } else {
+                    listEl.innerHTML = addresses.map(addr => `
+                        <div style="padding:20px; border:2px solid #f0f0f0; border-radius:15px; position:relative;">
+                            <span style="position:absolute; top:15px; right:15px; background:#f0f0f0; padding:4px 10px; border-radius:10px; font-size:11px; font-weight:800; color:#888;">${addr.addrs_type || 'Address'}</span>
+                            <div style="font-weight:900; font-size:16px; margin-bottom:5px;">${addr.contact_name}</div>
+                            <div style="font-weight:700; font-size:14px; color:#555; margin-bottom:3px;">${addr.contact_no}</div>
+                            <div style="font-size:14px; color:#777; line-height:1.4;">
+                                ${addr.locality}, ${addr.city}, ${addr.state} - ${addr.pincode}
+                            </div>
+                            <div style="display:flex; gap:15px; margin-top:15px;">
+                                <button onclick="editAddress('${addr.addressid}')" style="border:none; background:none; color:var(--secondary); font-weight:800; cursor:pointer;"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="deleteAddress('${addr.addressid}')" style="border:none; background:none; color:#ff6b6b; font-weight:800; cursor:pointer;"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                listEl.innerHTML = '<p style="color: #ff6b6b; text-align: center;">Failed to load addresses.</p>';
+            }
+        }
+
+        function openAddressModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Address';
+            document.getElementById('addressForm').reset();
+            document.getElementById('addrId').value = '';
+            document.getElementById('addressModal').style.display = 'flex';
+            fetchStates();
+        }
+
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = 'none';
+        }
+
+        async function editAddress(id) {
+            try {
+                const res = await fetch(`/api/addresses?userid=${userId}`);
+                const data = await res.json();
+                const addr = data.addressdata.find(a => a.addressid === id);
+                if (!addr) return;
+
+                document.getElementById('modalTitle').textContent = 'Edit Address';
+                document.getElementById('addrId').value = addr.addressid;
+                document.getElementById('addrName').value = addr.contact_name;
+                document.getElementById('addrMobile').value = addr.contact_no;
+                document.getElementById('addrLocality').value = addr.locality;
+                document.getElementById('addrCity').value = addr.city;
+                document.getElementById('addrPincode').value = addr.pincode;
+                document.getElementById('addrState').value = addr.state || 'Rajasthan';
+                
+                const radios = document.getElementsByName('addrType');
+                radios.forEach(r => { if(r.value === addr.addrs_type) r.checked = true; });
+
+                document.getElementById('addressModal').style.display = 'flex';
+            } catch (err) { alert('Failed to load address details'); }
+        }
+
+        document.getElementById('addressForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('addrSubmitBtn');
+            const id = document.getElementById('addrId').value;
+            
+            const payload = {
+                userid: userId,
+                contact_name: document.getElementById('addrName').value,
+                contact_no: document.getElementById('addrMobile').value,
+                locality: document.getElementById('addrLocality').value,
+                city: document.getElementById('addrCity').value,
+                pincode: document.getElementById('addrPincode').value,
+                state: document.getElementById('addrState').value,
+                landmark: '',
+                alternate_no: '',
+                addrs_type: document.querySelector('input[name="addrType"]:checked').value,
+                reqtype: id ? 'E' : 'A'
+            };
+            
+            // Critical Fix: Do not send addressid at all if it's an "Add" request
+            if (id) {
+                payload.addressid = id;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const res = await fetch('/api/address/manage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                
+                // Robust check for success response
+                const firstResponse = (Array.isArray(result) && result[0]) ? (result[0].response || '') : (result.response || '');
+                const isSuccess = firstResponse.toLowerCase().includes('success') || result.status === 'ok';
+
+                if (isSuccess) {
+                    closeAddressModal();
+                    loadAddresses();
+                } else {
+                    const msg = (Array.isArray(result) ? result[0].response : result.response) || result.error || 'Failed to save address';
+                    alert(msg);
+                    // Even if message is weird, reload list might show if it worked
+                    closeAddressModal();
+                    loadAddresses();
+                }
+            } catch (err) {
+                alert('Server error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Address';
+            }
+        };
+
+        async function deleteAddress(id) {
+            if (!confirm('Are you sure you want to delete this address?')) return;
+            try {
+                const res = await fetch('/api/address/manage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userid: userId, addressid: id, reqtype: 'X' })
+                });
+                loadAddresses();
+            } catch (err) { alert('Delete failed'); }
+        }
+
+        loadProfile();
+
+        // Check for deep links
+        // Deep links
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section');
+        if (section === 'wallet') showSection('myWallet', null);
+        if (section === 'returns') showSection('returns', null);
+        if (section === 'addresses') showSection('manageAddresses', null);
+    </script>
+</body>
+</html>

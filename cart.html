@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirstCry - Shopping Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .cart-container {
+            padding: 20px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        @media (max-width: 992px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+            .cart-container h1 {
+                font-size: 24px !important;
+                text-align: center;
+            }
+        }
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            gap: 20px;
+        }
+        @media (max-width: 576px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .item-img {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            .item-actions {
+                justify-content: center;
+                width: 100%;
+            }
+            .qty-control {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 5px;
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        .item-seller {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .item-price {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 5px 15px;
+            gap: 15px;
+        }
+        .qty-btn {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+        .qty-btn:hover {
+            color: var(--primary);
+        }
+        .qty-val {
+            font-weight: 800;
+            min-width: 20px;
+            text-align: center;
+        }
+        .remove-btn {
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+        .remove-btn:hover {
+            transform: scale(1.1);
+        }
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+        }
+        .summary-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .summary-row.total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .checkout-btn {
+            width: 100%;
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 800;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .checkout-btn:hover {
+            background: #45b7af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 50px;
+        }
+        .empty-cart i {
+            font-size: 80px;
+            color: #eee;
+            margin-bottom: 20px;
+        }
+        .continue-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">🎉 Free Shipping on Orders above ₹699! 🚚 | Same Day Delivery in Select Cities</div>
+
+    <header class="navbar has-back-btn">
+        <!-- New Back Button for Mobile -->
+        <button class="mobile-back-btn mobile-only" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <span class="first">First</span><span class="cry">Cry</span>
+        </a>
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search for Category, Brand or Product..." id="searchInput">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <div class="nav-links desktop-only">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="orders.html"><i class="fas fa-map-marker-alt"></i> Track Order</a>
+            <div id="authWrapper">
+                <a href="login.html" id="loginLink"><i class="fas fa-user"></i> Login</a>
+            </div>
+            <a href="cart.html" class="cart active"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCountDesktop" class="badge">0</span></a>
+        </div>
+        <div class="nav-links cart-only">
+            <a href="cart.html" class="cart"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="badge">0</span></a>
+            <div class="hamburger" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-menu" id="closeMenu"><i class="fas fa-times"></i></div>
+        <div class="logo">
+            <a href="index.html" style="text-decoration: none;">
+                <span class="first">First</span><span class="cry">Cry</span>
+            </a>
+        </div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Track Order</a></li>
+            <li><a href="#"><i class="fas fa-user"></i> Login/Register</a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+        </ul>
+    </div>
+
+    <main class="cart-container">
+        <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 30px; color: var(--text-dark);">Your Shopping Bag 🛍️</h1>
+        
+        <div id="cartContent" class="cart-layout">
+            <div class="cart-items" id="cartItemsList">
+                <div class="loading"><div class="spinner"></div> Loading your cart...</div>
+            </div>
+            
+            <div class="cart-summary" id="cartSummarySection" style="display: none;">
+                <h2 class="summary-title">Order Summary</h2>
+                <div id="summaryDetails">
+                    <!-- Summary rows go here -->
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total:</span>
+                    <span id="grandTotalText">₹0</span>
+                </div>
+                <button class="checkout-btn" onclick="location.href='checkout.html'">Proceed to Checkout</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom"><p>&copy; 2026 FirstCry Clone - All rights reserved. | Developed and Maintained  By Kush Sharma  ( Digisoft Solutions )</p></div>
+    </footer>
+
+    <!-- Unified Mobile Bottom Navigation -->
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="categories.html"><i class="fas fa-th-large"></i><span>Categories</span></a>
+        <a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i><span>Cart</span><span id="cartCountMobileBottom" class="dot" style="display:none;"></span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script src="./nav.js"></script>
+    <script src="./cart-logic.js"></script>
+</body>
+</html>
